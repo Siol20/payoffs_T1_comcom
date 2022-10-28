@@ -1,0 +1,205 @@
+---
+title: "T1_comcom_markdown"
+output: html_document
+date: "2022-10-18"
+---
+
+```{r}
+#PACKAGES
+library(tidyr)
+library(lme4)
+library(psych)
+library(jtools)
+library(dplyr)
+library(groupdata2)
+library(writexl)
+```
+
+```{r}
+#Nur für T2
+T1_1910[is.na(T1_1910)] <- 0
+
+
+```
+
+
+```{r}
+#Unfertige Antworten Aussortieren
+T1_1910$ende.1.player.Auszahlung <- as.factor(T1_1910$ende.1.player.Auszahlung)
+#Für Auszahlung unwichtige Spalten löschen
+T1_Auszahlung <- subset(x=T1_1910, subset = T1_1910$'ende.1.player.Auszahlung'=="SVO" | T1_1910$'ende.1.player.Auszahlung'=="Conditional_Cooperation")
+
+#Runden zusammenziehen
+#Conditional Cooperation
+T1_Auszahlung[is.na(T1_Auszahlung)] <- 0
+T1_Auszahlung$komplett.1.player.contribution <- as.numeric(T1_Auszahlung$komplett.1.player.contribution)
+T1_Auszahlung$komplett.2.player.contribution <- as.numeric(T1_Auszahlung$komplett.2.player.contribution)
+T1_Auszahlung$komplett.3.player.contribution <- as.numeric(T1_Auszahlung$komplett.3.player.contribution)
+T1_Auszahlung$komplett.4.player.contribution <- as.numeric(T1_Auszahlung$komplett.4.player.contribution)
+T1_Auszahlung$contribution <- T1_Auszahlung$komplett.1.player.contribution + T1_Auszahlung$komplett.2.player.contribution + T1_Auszahlung$komplett.3.player.contribution + T1_Auszahlung$komplett.4.player.contribution
+
+T1_Auszahlung$cond_coop_0 <- T1_Auszahlung$komplett.1.player.cond_coop_0 + T1_Auszahlung$komplett.2.player.cond_coop_0 + T1_Auszahlung$komplett.3.player.cond_coop_0 + T1_Auszahlung$komplett.4.player.cond_coop_0
+T1_Auszahlung$cond_coop_20 <- T1_Auszahlung$komplett.1.player.cond_coop_20 + T1_Auszahlung$komplett.2.player.cond_coop_20 + T1_Auszahlung$komplett.3.player.cond_coop_20 + T1_Auszahlung$komplett.4.player.cond_coop_20
+T1_Auszahlung$cond_coop_40 <- T1_Auszahlung$komplett.1.player.cond_coop_40 + T1_Auszahlung$komplett.2.player.cond_coop_40 + T1_Auszahlung$komplett.3.player.cond_coop_40 + T1_Auszahlung$komplett.4.player.cond_coop_40
+T1_Auszahlung$cond_coop_60 <- T1_Auszahlung$komplett.1.player.cond_coop_60 + T1_Auszahlung$komplett.2.player.cond_coop_60 + T1_Auszahlung$komplett.3.player.cond_coop_60 + T1_Auszahlung$komplett.4.player.cond_coop_60
+T1_Auszahlung$cond_coop_80 <- T1_Auszahlung$komplett.1.player.cond_coop_80 + T1_Auszahlung$komplett.2.player.cond_coop_80 + T1_Auszahlung$komplett.3.player.cond_coop_80 + T1_Auszahlung$komplett.4.player.cond_coop_80
+
+T1_Auszahlung$cond_coop_100 <- T1_Auszahlung$komplett.1.player.cond_coop_100 + T1_Auszahlung$komplett.2.player.cond_coop_100 + T1_Auszahlung$komplett.3.player.cond_coop_100 + T1_Auszahlung$komplett.4.player.cond_coop_100
+T1_Auszahlung$cond_coop_120 <- T1_Auszahlung$komplett.1.player.cond_coop_120 + T1_Auszahlung$komplett.2.player.cond_coop_120 + T1_Auszahlung$komplett.3.player.cond_coop_120 + T1_Auszahlung$komplett.4.player.cond_coop_120
+T1_Auszahlung$cond_coop_140 <- T1_Auszahlung$komplett.1.player.cond_coop_140 + T1_Auszahlung$komplett.2.player.cond_coop_140 + T1_Auszahlung$komplett.3.player.cond_coop_140 + T1_Auszahlung$komplett.4.player.cond_coop_140
+T1_Auszahlung$cond_coop_160 <- T1_Auszahlung$komplett.1.player.cond_coop_160 + T1_Auszahlung$komplett.2.player.cond_coop_160 + T1_Auszahlung$komplett.3.player.cond_coop_160 + T1_Auszahlung$komplett.4.player.cond_coop_160
+T1_Auszahlung$cond_coop_180 <- T1_Auszahlung$komplett.1.player.cond_coop_180 + T1_Auszahlung$komplett.2.player.cond_coop_180 + T1_Auszahlung$komplett.3.player.cond_coop_180 + T1_Auszahlung$komplett.4.player.cond_coop_180
+
+T1_Auszahlung$cond_coop_200 <- T1_Auszahlung$komplett.1.player.cond_coop_200 + T1_Auszahlung$komplett.2.player.cond_coop_200 + T1_Auszahlung$komplett.3.player.cond_coop_200 + T1_Auszahlung$komplett.4.player.cond_coop_200
+T1_Auszahlung$cond_coop_220 <- T1_Auszahlung$komplett.1.player.cond_coop_220 + T1_Auszahlung$komplett.2.player.cond_coop_220 + T1_Auszahlung$komplett.3.player.cond_coop_220 + T1_Auszahlung$komplett.4.player.cond_coop_220
+T1_Auszahlung$cond_coop_240 <- T1_Auszahlung$komplett.1.player.cond_coop_240 + T1_Auszahlung$komplett.2.player.cond_coop_240 + T1_Auszahlung$komplett.3.player.cond_coop_240 + T1_Auszahlung$komplett.4.player.cond_coop_240
+T1_Auszahlung$cond_coop_260 <- T1_Auszahlung$komplett.1.player.cond_coop_260 + T1_Auszahlung$komplett.2.player.cond_coop_260 + T1_Auszahlung$komplett.3.player.cond_coop_260 + T1_Auszahlung$komplett.4.player.cond_coop_260
+T1_Auszahlung$cond_coop_280 <- T1_Auszahlung$komplett.1.player.cond_coop_280 + T1_Auszahlung$komplett.2.player.cond_coop_280 + T1_Auszahlung$komplett.3.player.cond_coop_280 + T1_Auszahlung$komplett.4.player.cond_coop_280
+
+T1_Auszahlung$cond_coop_300 <- T1_Auszahlung$komplett.1.player.cond_coop_300 + T1_Auszahlung$komplett.2.player.cond_coop_300 + T1_Auszahlung$komplett.3.player.cond_coop_300 + T1_Auszahlung$komplett.4.player.cond_coop_300
+T1_Auszahlung$cond_coop_320 <- T1_Auszahlung$komplett.1.player.cond_coop_320 + T1_Auszahlung$komplett.2.player.cond_coop_320 + T1_Auszahlung$komplett.3.player.cond_coop_320 + T1_Auszahlung$komplett.4.player.cond_coop_320
+T1_Auszahlung$cond_coop_340 <- T1_Auszahlung$komplett.1.player.cond_coop_340 + T1_Auszahlung$komplett.2.player.cond_coop_340 + T1_Auszahlung$komplett.3.player.cond_coop_340 + T1_Auszahlung$komplett.4.player.cond_coop_340
+T1_Auszahlung$cond_coop_360 <- T1_Auszahlung$komplett.1.player.cond_coop_360 + T1_Auszahlung$komplett.2.player.cond_coop_360 + T1_Auszahlung$komplett.3.player.cond_coop_360 + T1_Auszahlung$komplett.4.player.cond_coop_360
+T1_Auszahlung$cond_coop_380 <- T1_Auszahlung$komplett.1.player.cond_coop_380 + T1_Auszahlung$komplett.2.player.cond_coop_380 + T1_Auszahlung$komplett.3.player.cond_coop_380 + T1_Auszahlung$komplett.4.player.cond_coop_380
+T1_Auszahlung$cond_coop_400 <- T1_Auszahlung$komplett.1.player.cond_coop_400 + T1_Auszahlung$komplett.2.player.cond_coop_400 + T1_Auszahlung$komplett.3.player.cond_coop_400 + T1_Auszahlung$komplett.4.player.cond_coop_400
+
+#SVO
+T1_Auszahlung$svo1 <- T1_Auszahlung$komplett.1.player.svo_choice_1 + T1_Auszahlung$komplett.2.player.svo_choice_1 + T1_Auszahlung$komplett.3.player.svo_choice_1 + T1_Auszahlung$komplett.4.player.svo_choice_1
+T1_Auszahlung$svo2 <- T1_Auszahlung$komplett.1.player.svo_choice_2 + T1_Auszahlung$komplett.2.player.svo_choice_2 + T1_Auszahlung$komplett.3.player.svo_choice_2 + T1_Auszahlung$komplett.4.player.svo_choice_2
+T1_Auszahlung$svo3 <- T1_Auszahlung$komplett.1.player.svo_choice_3 + T1_Auszahlung$komplett.2.player.svo_choice_3 + T1_Auszahlung$komplett.3.player.svo_choice_3 + T1_Auszahlung$komplett.4.player.svo_choice_3
+T1_Auszahlung$svo4 <- T1_Auszahlung$komplett.1.player.svo_choice_4 + T1_Auszahlung$komplett.2.player.svo_choice_4 + T1_Auszahlung$komplett.3.player.svo_choice_4 + T1_Auszahlung$komplett.4.player.svo_choice_4
+T1_Auszahlung$svo5 <- T1_Auszahlung$komplett.1.player.svo_choice_5 + T1_Auszahlung$komplett.2.player.svo_choice_5 + T1_Auszahlung$komplett.3.player.svo_choice_5 + T1_Auszahlung$komplett.4.player.svo_choice_5
+T1_Auszahlung$svo6 <- T1_Auszahlung$komplett.1.player.svo_choice_6 + T1_Auszahlung$komplett.2.player.svo_choice_6 + T1_Auszahlung$komplett.3.player.svo_choice_6 + T1_Auszahlung$komplett.4.player.svo_choice_6
+T1_Auszahlung$svo7 <- T1_Auszahlung$komplett.1.player.svo_choice_7 + T1_Auszahlung$komplett.2.player.svo_choice_7 + T1_Auszahlung$komplett.3.player.svo_choice_7 + T1_Auszahlung$komplett.4.player.svo_choice_7
+T1_Auszahlung$svo8 <- T1_Auszahlung$komplett.1.player.svo_choice_8 + T1_Auszahlung$komplett.2.player.svo_choice_8 + T1_Auszahlung$komplett.3.player.svo_choice_8 + T1_Auszahlung$komplett.4.player.svo_choice_8
+T1_Auszahlung$svo9 <- T1_Auszahlung$komplett.1.player.svo_choice_9 + T1_Auszahlung$komplett.2.player.svo_choice_9 + T1_Auszahlung$komplett.3.player.svo_choice_9 + T1_Auszahlung$komplett.4.player.svo_choice_9
+T1_Auszahlung$svo10 <- T1_Auszahlung$komplett.1.player.svo_choice_10 + T1_Auszahlung$komplett.2.player.svo_choice_10 + T1_Auszahlung$komplett.3.player.svo_choice_10 + T1_Auszahlung$komplett.4.player.svo_choice_10
+T1_Auszahlung$svo11 <- T1_Auszahlung$komplett.1.player.svo_choice_11 + T1_Auszahlung$komplett.2.player.svo_choice_11 + T1_Auszahlung$komplett.3.player.svo_choice_11 + T1_Auszahlung$komplett.4.player.svo_choice_11
+T1_Auszahlung$svo12 <- T1_Auszahlung$komplett.1.player.svo_choice_12 + T1_Auszahlung$komplett.2.player.svo_choice_12 + T1_Auszahlung$komplett.3.player.svo_choice_12 + T1_Auszahlung$komplett.4.player.svo_choice_12
+T1_Auszahlung$svo13 <- T1_Auszahlung$komplett.1.player.svo_choice_13 + T1_Auszahlung$komplett.2.player.svo_choice_13 + T1_Auszahlung$komplett.3.player.svo_choice_13 + T1_Auszahlung$komplett.4.player.svo_choice_13
+T1_Auszahlung$svo14 <- T1_Auszahlung$komplett.1.player.svo_choice_14 + T1_Auszahlung$komplett.2.player.svo_choice_14 + T1_Auszahlung$komplett.3.player.svo_choice_14 + T1_Auszahlung$komplett.4.player.svo_choice_14
+T1_Auszahlung$svo15 <- T1_Auszahlung$komplett.1.player.svo_choice_15 + T1_Auszahlung$komplett.2.player.svo_choice_15 + T1_Auszahlung$komplett.3.player.svo_choice_15 + T1_Auszahlung$komplett.4.player.svo_choice_15
+```
+
+```{r}
+#SVO Auszahlungen übertragen
+SVO_Fullx7 <- select(SVO_Fullx7, -N)
+SVO_Fullx7 <- as.numeric(SVO_Fullx7)
+SVO_Fullx7b <- unlist(SVO_Fullx7)
+
+for(i in 1:9) {T1_Auszahlung$svo1_ego[T1_Auszahlung$svo1 == i] <- SVO_Fullx7[1, i]}
+for(i in 1:9) {T1_Auszahlung$svo2_ego[T1_Auszahlung$svo2 == i] <- SVO_Fullx7[2, i]}
+for(i in 1:9) {T1_Auszahlung$svo3_ego[T1_Auszahlung$svo3 == i] <- SVO_Fullx7[3, i]}
+for(i in 1:9) {T1_Auszahlung$svo4_ego[T1_Auszahlung$svo4 == i] <- SVO_Fullx7[4, i]}
+for(i in 1:9) {T1_Auszahlung$svo5_ego[T1_Auszahlung$svo5 == i] <- SVO_Fullx7[5, i]}
+for(i in 1:9) {T1_Auszahlung$svo6_ego[T1_Auszahlung$svo6 == i] <- SVO_Fullx7[6, i]}
+for(i in 1:9) {T1_Auszahlung$svo7_ego[T1_Auszahlung$svo7 == i] <- SVO_Fullx7[7, i]}
+for(i in 1:9) {T1_Auszahlung$svo8_ego[T1_Auszahlung$svo8 == i] <- SVO_Fullx7[8, i]}
+for(i in 1:9) {T1_Auszahlung$svo9_ego[T1_Auszahlung$svo9 == i] <- SVO_Fullx7[9, i]}
+for(i in 1:9) {T1_Auszahlung$svo10_ego[T1_Auszahlung$svo10 == i] <- SVO_Fullx7[10, i]}
+for(i in 1:9) {T1_Auszahlung$svo11_ego[T1_Auszahlung$svo11 == i] <- SVO_Fullx7[11, i]}
+for(i in 1:9) {T1_Auszahlung$svo12_ego[T1_Auszahlung$svo12 == i] <- SVO_Fullx7[12, i]}
+for(i in 1:9) {T1_Auszahlung$svo13_ego[T1_Auszahlung$svo13 == i] <- SVO_Fullx7[13, i]}
+for(i in 1:9) {T1_Auszahlung$svo14_ego[T1_Auszahlung$svo14 == i] <- SVO_Fullx7[14, i]}
+for(i in 1:9) {T1_Auszahlung$svo15_ego[T1_Auszahlung$svo15 == i] <- SVO_Fullx7[15, i]}
+
+
+for(i in 1:9) {T1_Auszahlung$svo1_alter[T1_Auszahlung$svo1 == i] <- SVO_Fullx7[1, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo2_alter[T1_Auszahlung$svo2 == i] <- SVO_Fullx7[2, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo3_alter[T1_Auszahlung$svo3 == i] <- SVO_Fullx7[3, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo4_alter[T1_Auszahlung$svo4 == i] <- SVO_Fullx7[4, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo5_alter[T1_Auszahlung$svo5 == i] <- SVO_Fullx7[5, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo6_alter[T1_Auszahlung$svo6 == i] <- SVO_Fullx7[6, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo7_alter[T1_Auszahlung$svo7 == i] <- SVO_Fullx7[7, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo8_alter[T1_Auszahlung$svo8 == i] <- SVO_Fullx7[8, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo9_alter[T1_Auszahlung$svo9 == i] <- SVO_Fullx7[9, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo10_alter[T1_Auszahlung$svo10 == i] <- SVO_Fullx7[10, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo11_alter[T1_Auszahlung$svo11 == i] <- SVO_Fullx7[11, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo12_alter[T1_Auszahlung$svo12 == i] <- SVO_Fullx7[12, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo13_alter[T1_Auszahlung$svo13 == i] <- SVO_Fullx7[13, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo14_alter[T1_Auszahlung$svo14 == i] <- SVO_Fullx7[14, i+9]}
+for(i in 1:9) {T1_Auszahlung$svo15_alter[T1_Auszahlung$svo15 == i] <- SVO_Fullx7[15, i+9]}
+
+T1_Auszahlung$svo1_alter <- as.numeric(T1_Auszahlung$svo1_alter)
+T1_Auszahlung$svo2_alter <- as.numeric(T1_Auszahlung$svo2_alter)
+T1_Auszahlung$svo3_alter <- as.numeric(T1_Auszahlung$svo3_alter)
+T1_Auszahlung$svo4_alter <- as.numeric(T1_Auszahlung$svo4_alter)
+T1_Auszahlung$svo5_alter <- as.numeric(T1_Auszahlung$svo5_alter)
+T1_Auszahlung$svo6_alter <- as.numeric(T1_Auszahlung$svo6_alter)
+T1_Auszahlung$svo7_alter <- as.numeric(T1_Auszahlung$svo7_alter)
+T1_Auszahlung$svo8_alter <- as.numeric(T1_Auszahlung$svo8_alter)
+T1_Auszahlung$svo9_alter <- as.numeric(T1_Auszahlung$svo9_alter)
+T1_Auszahlung$svo10_alter <- as.numeric(T1_Auszahlung$svo10_alter)
+T1_Auszahlung$svo11_alter <- as.numeric(T1_Auszahlung$svo11_alter)
+T1_Auszahlung$svo12_alter <- as.numeric(T1_Auszahlung$svo12_alter)
+T1_Auszahlung$svo13_alter <- as.numeric(T1_Auszahlung$svo13_alter)
+T1_Auszahlung$svo14_alter <- as.numeric(T1_Auszahlung$svo14_alter)
+T1_Auszahlung$svo15_alter <- as.numeric(T1_Auszahlung$svo15_alter)
+
+T1_Auszahlung$svo1_ego <- as.numeric(T1_Auszahlung$svo1_ego)
+T1_Auszahlung$svo2_ego <- as.numeric(T1_Auszahlung$svo2_ego)
+T1_Auszahlung$svo3_ego <- as.numeric(T1_Auszahlung$svo3_ego)
+T1_Auszahlung$svo4_ego <- as.numeric(T1_Auszahlung$svo4_ego)
+T1_Auszahlung$svo5_ego <- as.numeric(T1_Auszahlung$svo5_ego)
+T1_Auszahlung$svo6_ego <- as.numeric(T1_Auszahlung$svo6_ego)
+T1_Auszahlung$svo7_ego <- as.numeric(T1_Auszahlung$svo7_ego)
+T1_Auszahlung$svo8_ego <- as.numeric(T1_Auszahlung$svo8_ego)
+T1_Auszahlung$svo9_ego <- as.numeric(T1_Auszahlung$svo9_ego)
+T1_Auszahlung$svo10_ego <- as.numeric(T1_Auszahlung$svo10_ego)
+T1_Auszahlung$svo11_ego <- as.numeric(T1_Auszahlung$svo11_ego)
+T1_Auszahlung$svo12_ego <- as.numeric(T1_Auszahlung$svo12_ego)
+T1_Auszahlung$svo13_ego <- as.numeric(T1_Auszahlung$svo13_ego)
+T1_Auszahlung$svo14_ego <- as.numeric(T1_Auszahlung$svo14_ego)
+T1_Auszahlung$svo15_ego <- as.numeric(T1_Auszahlung$svo15_ego)
+```
+
+```{r}
+#Gruppierungen
+T1_Auszahlung$svo_role <-0
+
+#Rollenverteilung SVO
+T1_Auszahlung$svo_role<-group(
+  T1_Auszahlung,
+  2,
+  method = "every",
+  starts_col = NULL,
+  force_equal = FALSE,
+  allow_zero = FALSE,
+  return_factor = TRUE,
+  descending = FALSE,
+  randomize = FALSE,
+  col_name = "svo_group",
+  remove_missing_starts = FALSE
+)
+T1_Auszahlung$svo_role <- factor(T1_Auszahlung$svo_role, levels = c(1, 2), labels = c("Sender", "Empfänger"))
+
+
+#Rollenverteilung Strategy-Method
+T1_Auszahlung$sm_Auszahlung<-group(
+  T1_Auszahlung,
+  4,
+  method = "every",
+  starts_col = NULL,
+  force_equal = FALSE,
+  allow_zero = FALSE,
+  return_factor = TRUE,
+  descending = FALSE,
+  randomize = FALSE,
+  col_name = "svo_group",
+  remove_missing_starts = FALSE
+)
+T1_Auszahlung$sm_Auszahlung <- factor(T1_Auszahlung$sm_Auszahlung, levels = c(1, 2, 3, 4), labels = c("PGG", "PGG", "PGG", "SM"))
+
+
+T1_Auszahlung <- as.numeric(T1_Auszahlung)
+```
+
+```{r}
+#Export nach Excel
+write_xlsx(T1_Auszahlung,"T1_Auszahlung.xlsx")
+write.csv(T1_Auszahlung, "T1_Auszahlung.csv")
+
+```
+
+
+
